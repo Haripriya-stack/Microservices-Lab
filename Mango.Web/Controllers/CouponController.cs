@@ -38,12 +38,14 @@ namespace Mango.Web.Controllers
             if (response.IsSuccess && response.Result != null)
             {
                  couponsList = JsonConvert.DeserializeObject<List<CouponDTO>>(Convert.ToString(response.Result) ?? string.Empty);
+               // TempData["SuccessMessage"] = "Coupons fetched successfully!";
 
-          
+
                 return View("Details", couponsList);
             }
             else
             {
+                TempData["ErrorMessage"] = response.Message ?? "An error occurred while fetching the coupons.";
                 return RedirectToAction(nameof(Error));
             }
         }
@@ -58,11 +60,13 @@ namespace Mango.Web.Controllers
             {
                 couponsList = JsonConvert.DeserializeObject<List<CouponDTO>>(Convert.ToString(response.Result) ?? string.Empty);
 
+                //TempData["SuccessMessage"] = "Coupons fetched successfully!";
 
                 return View("~/Views/Coupon/Custom/Details.cshtml",couponsList);
             }
             else
             {
+                TempData["ErrorMessage"] = response.Message ?? "An error occurred while fetching the coupons.";
                 return RedirectToAction(nameof(Error));
             }
         }
@@ -98,12 +102,14 @@ namespace Mango.Web.Controllers
 
 
                     //TempData["Result"] = JsonConvert.SerializeObject(response.Result);
-
+                    TempData["SuccessMessage"] = "Coupon created successfully!";
                     return RedirectToAction(nameof(Success));
+
 
                 }
                 else
                 {
+                    TempData["ErrorMessage"] = response.Message ?? "An error occurred while creating the coupon.";
                     return RedirectToAction(nameof(Error));
                 }
 
@@ -132,7 +138,7 @@ namespace Mango.Web.Controllers
                     TempData["Result"] =
                         JsonConvert.SerializeObject(couponres);
 
-
+                    TempData["SuccessMessage"] = "Coupon created successfully!"; 
                     //TempData["Result"] = JsonConvert.SerializeObject(response.Result);
 
                     return RedirectToAction(nameof(Success));
@@ -141,6 +147,7 @@ namespace Mango.Web.Controllers
                 }
                 else
                 {
+                    TempData["ErrorMessage"] = response.Message ?? "An error occurred while creating the coupon.";
                     return RedirectToAction(nameof(Error));
                 }
 
@@ -156,10 +163,12 @@ namespace Mango.Web.Controllers
             ResponseDTO response = await _coupService.DeleteCouponAsync(id);
             if (response.IsSuccess)
             {
+                TempData["SuccessMessage"] = "Coupon deleted successfully!";
                 return RedirectToAction((TempData["ViewType"]?.ToString() == "Default")? "Details": "CustomDetails");
             }
             else
             {
+                TempData["ErrorMessage"] = response.Message ?? "An error occurred while deleting the coupon.";
                 return RedirectToAction(nameof(Error));
             }
         }
