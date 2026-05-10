@@ -24,7 +24,7 @@ namespace Mango.Web.Services
                 APIType.APITypeEnum.POST => HttpMethod.Post,
                 APIType.APITypeEnum.PUT => HttpMethod.Put,
                 APIType.APITypeEnum.DELETE => HttpMethod.Delete,
-                _ => throw new NotImplementedException(),
+                _ => throw new NotImplementedException()
             };  
             reqmessage.Content= new StringContent(JsonConvert.SerializeObject(request.RequestBody??"") , Encoding.UTF8, request.ContentType);
             reqmessage.RequestUri = new Uri(request.Url??"");
@@ -38,7 +38,19 @@ namespace Mango.Web.Services
                 Message = result.ReasonPhrase
             };
 
-            var responseContent = await result.Content.ReadFromJsonAsync<ResponseDTO>();
+          var serverResponse = await result.Content.ReadFromJsonAsync<ResponseDTO>();
+
+
+            // BaseService.SendAPIRequestAsync - replacement snippet
+        //    var content = await result.Content.ReadAsStringAsync();
+
+            // Deserialize the server response shape
+           // var serverResponse = JsonConvert.DeserializeObject<ResponseDTO>(content);
+
+            // Map serverResponse into the apiResponse we return to callers
+            apiResponse.Message = serverResponse?.Message ?? apiResponse.Message;
+            apiResponse.IsSuccess = serverResponse?.IsSuccess ?? apiResponse.IsSuccess;
+            apiResponse.Result = serverResponse?.Result;
 
 
             return apiResponse;
