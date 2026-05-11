@@ -43,7 +43,7 @@ namespace Mango.Services.CouponApi.Controllers
 
         }
 
-        [HttpGet("{id:int}")]
+        [HttpGet("GetById/{id:int}")]
 
         public ResponseDTO GetCouponById(int id)
         {

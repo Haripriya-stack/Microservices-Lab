@@ -12,7 +12,7 @@ namespace Mango.Web.Models
 
         public string ContentType { get; set; } = "application/json";
 
-        public string? RequestBody { get; set; }
+        public object? RequestBody { get; set; }
         public string? AccessToken { get; set; }
     }
 }

@@ -1,0 +1,23 @@
+﻿@model CouponDTO
+@{
+    ViewData["Title"] = "Success";
+}
+
+<h1 class="text-success">Success.</h1>
+<h2 class="text-success">The coupon has been successfully created.</h2>
+@if (Model is not null)
+{
+    <p>
+        <strong>Coupon ID:</strong> <code>@Model.CouponId</code>
+    </p>
+}
+
+<h3>SuccessFully Created </h3>
+@if(TempData["ImplementationType"]?.ToString() == "Default")
+{
+    <a asp-action="Details">Go back </a>
+}
+else
+{
+    <a asp-action="CustomDetails">Go back </a>
+}
