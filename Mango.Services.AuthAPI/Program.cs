@@ -1,5 +1,7 @@
 
 using Mango.Services.AuthAPI.Data;
+using Mango.Services.AuthAPI.Models;
+using Mango.Services.AuthAPI.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,14 +18,21 @@ namespace Mango.Services.AuthAPI
             builder.Services.AddControllers();
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
+            builder.Services.AddSwaggerGen();
+            
 
-            builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<AppDBContext>().AddDefaultTokenProviders();
 
             builder.Services.AddDbContext<AppDBContext>(options =>
             {
-                options.UseSqlServer(builder.Configuration.GetConnectionString("LocalConnection_Coupon_sql"));
+                options.UseSqlServer(builder.Configuration.GetConnectionString("LocalConnection_Auth_sql"));
             });
+
+            builder.Services.Configure<JWTOptions>(builder.Configuration.GetSection("APISettings:JWTOptions"));
+            
+            builder.Services.AddScoped<IAuthService,AuthService>();
+     
 
             var app = builder.Build();
 
@@ -31,6 +40,13 @@ namespace Mango.Services.AuthAPI
             if (app.Environment.IsDevelopment())
             {
                 app.MapOpenApi();
+                app.UseSwagger();
+                app.UseSwaggerUI(options =>
+                {
+                    options.SwaggerEndpoint("/openapi/v1.json", "MyAuthAPI");
+
+                });
+               
             }
 
             app.UseHttpsRedirection();

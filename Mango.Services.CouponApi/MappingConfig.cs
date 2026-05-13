@@ -12,7 +12,7 @@ namespace Mango.Services.CouponApi
 
             CreateMap<Coupon, CouponDTO>()
     .ForMember(dest => dest.CouponCode,
-        opt => opt.MapFrom(src => "Translated" + "-" + src.CouponCode));
+        opt => opt.MapFrom(src => "UI Viewla" + "-" + src.CouponCode));
 
         }
     }

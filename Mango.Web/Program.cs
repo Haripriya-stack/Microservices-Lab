@@ -1,8 +1,9 @@
 using System;
 using Mango.Web.Services;
+using Mango.Web.Models;
 using Polly;
 using Polly.Extensions.Http;
-
+using static Mango.Web.Models.APIType;
 namespace Mango.Web
 {
     public class Program
@@ -14,7 +15,8 @@ namespace Mango.Web
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
-            Mango.Web.Models.APIType.APIBaseUrl = builder.Configuration["CouponAPIHost:BaseURL"];
+       AuthAPIBaseUrl = builder.Configuration["BaseURLs:AuthAPI"];
+         CouponAPIBaseUrl = builder.Configuration["BaseURLs:CouponAPI"];
             //builder.Services.AddHttpClient("CouponApi", options =>
             //{
             //    options.BaseAddress = new Uri(builder.Configuration["CouponAPIHost:BaseURL"]);
@@ -32,15 +34,23 @@ namespace Mango.Web
             builder.Services.AddHttpClient();
             builder.Services.AddHttpClient<ICouponService, CouponService>(options =>
             {
-                options.BaseAddress = new Uri(builder.Configuration["CouponAPIHost:BaseURL"]);
+                options.BaseAddress = new Uri(CouponAPIBaseUrl);
             }).AddTransientHttpErrorPolicy(opt =>
                 opt.WaitAndRetryAsync(3, retryAttempt =>
                 TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)))
             ).AddTransientHttpErrorPolicy(opt => opt.CircuitBreakerAsync(3, TimeSpan.FromSeconds(30)));
+            
+            builder.Services.AddHttpClient<IAuthService, AuthService>(opt => opt.BaseAddress = new Uri(AuthAPIBaseUrl))
+                .AddTransientHttpErrorPolicy(opt =>
+                
+                    opt.WaitAndRetryAsync(3,retryattempt=> TimeSpan.FromSeconds(Math.Pow(2,retryattempt)))
+                ).AddTransientHttpErrorPolicy(opt => opt.CircuitBreakerAsync(3, TimeSpan.FromSeconds(30)))
+                .SetHandlerLifetime(TimeSpan.FromMinutes(5));
+
             //since i am injecting base service inside couponservice so that needs to be registered in DI
             builder.Services.AddScoped<IBaseService, BaseService>();
             builder.Services.AddScoped<ICouponService, CouponService>();
-
+            builder.Services.AddScoped<IAuthService, AuthService>();
 
             builder.Services.AddHttpContextAccessor();
 

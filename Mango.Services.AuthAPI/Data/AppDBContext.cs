@@ -5,13 +5,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Mango.Services.AuthAPI.Data
 {
-    public class AppDBContext :IdentityDbContext<IdentityUser>
+    public class AppDBContext :IdentityDbContext<ApplicationUser>
     {
         public AppDBContext(DbContextOptions<AppDBContext> options) : base(options)
         {
             
         }
-       
+       public DbSet<ApplicationUser> ApplicationUsers { get; set; }
         //public override int SaveChanges()
         //{
         //    AppliedChanges();

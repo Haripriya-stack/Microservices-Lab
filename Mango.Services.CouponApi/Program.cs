@@ -18,7 +18,7 @@ public partial class Program
 
         builder.Services.AddDbContext<AppDBContext>(options =>
         {
-            options.UseSqlServer(builder.Configuration.GetConnectionString("LocalConnection_Auth_sql"));
+            options.UseSqlServer(builder.Configuration.GetConnectionString("LocalConnection_Coupon_sql"));
         });
         builder.Services.AddAutoMapper(cfg =>
         {

@@ -9,9 +9,9 @@ namespace Mango.Web.Controllers
     public class CouponController : Controller
     {
         public ICouponService _coupService { get; set; }
-        public CouponController(ICouponService coupservice) 
+        public CouponController(ICouponService coupservice)
         {
-          _coupService = coupservice;
+            _coupService = coupservice;
         }
         public IActionResult Index()
         {
@@ -37,8 +37,8 @@ namespace Mango.Web.Controllers
             TempData["ViewType"] = "Default";
             if (response.IsSuccess && response.Result != null)
             {
-                 couponsList = JsonConvert.DeserializeObject<List<CouponDTO>>(Convert.ToString(response.Result) ?? string.Empty);
-               // TempData["SuccessMessage"] = "Coupons fetched successfully!";
+                couponsList = JsonConvert.DeserializeObject<List<CouponDTO>>(Convert.ToString(response.Result) ?? string.Empty);
+                // TempData["SuccessMessage"] = "Coupons fetched successfully!";
 
 
                 return View("Details", couponsList);
@@ -62,7 +62,7 @@ namespace Mango.Web.Controllers
 
                 //TempData["SuccessMessage"] = "Coupons fetched successfully!";
 
-                return View("~/Views/Coupon/Custom/Details.cshtml",couponsList);
+                return View("~/Views/Coupon/Custom/Details.cshtml", couponsList);
             }
             else
             {
@@ -84,7 +84,7 @@ namespace Mango.Web.Controllers
             return View("~/Views/Coupon/Custom/Create.cshtml");
         }
 
-         [HttpPost]
+        [HttpPost]
         public async Task<IActionResult> CreateCouponDefaultView(CouponDTO coupon)
         {
             // ViewData["ImplementationType"] = "Default";
@@ -93,7 +93,7 @@ namespace Mango.Web.Controllers
             {
                 ResponseDTO response = await _coupService.PostCouponDataAsync(coupon);
 
-                if(response.IsSuccess && response.Result != null)
+                if (response.IsSuccess && response.Result != null)
                 {
                     var couponres = JsonConvert.DeserializeObject<CouponDTO>(Convert.ToString(response.Result));
 
@@ -122,8 +122,8 @@ namespace Mango.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateCouponCustomView(CouponDTO coupon)
         {
-           // ViewData["ImplementationType"] = "Custom";
-           TempData["ImplementationType"] = "Custom";
+            // ViewData["ImplementationType"] = "Custom";
+            TempData["ImplementationType"] = "Custom";
 
             if (ModelState.IsValid)
             {
@@ -138,11 +138,11 @@ namespace Mango.Web.Controllers
                     TempData["Result"] =
                         JsonConvert.SerializeObject(couponres);
 
-                    TempData["SuccessMessage"] = "Coupon created successfully!"; 
+                    TempData["SuccessMessage"] = "Coupon created successfully!";
                     //TempData["Result"] = JsonConvert.SerializeObject(response.Result);
 
                     return RedirectToAction(nameof(Success));
-                   
+
 
                 }
                 else
@@ -157,14 +157,14 @@ namespace Mango.Web.Controllers
             return View("~/Views/Coupon/Custom/Create.cshtml");
         }
 
-     
+
         public async Task<IActionResult> DeleteCoupon(int id)
         {
             ResponseDTO response = await _coupService.DeleteCouponAsync(id);
             if (response.IsSuccess)
             {
                 TempData["SuccessMessage"] = "Coupon deleted successfully!";
-                return RedirectToAction((TempData["ViewType"]?.ToString() == "Default")? "Details": "CustomDetails");
+                return RedirectToAction((TempData["ViewType"]?.ToString() == "Default") ? "Details" : "CustomDetails");
             }
             else
             {
@@ -178,5 +178,8 @@ namespace Mango.Web.Controllers
             var result = JsonConvert.DeserializeObject<CouponDTO>(TempData["Result"]?.ToString());
             return View(result);
         }
+
+
+       
     }
 }
