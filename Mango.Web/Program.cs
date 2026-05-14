@@ -4,6 +4,7 @@ using Mango.Web.Models;
 using Polly;
 using Polly.Extensions.Http;
 using static Mango.Web.Models.APIType;
+using Microsoft.AspNetCore.Authentication.Cookies;
 namespace Mango.Web
 {
     public class Program
@@ -30,6 +31,13 @@ namespace Mango.Web
 
             //).AddTransientHttpErrorPolicy(opt => opt.CircuitBreakerAsync(3, TimeSpan.FromSeconds(30)))
             //.SetHandlerLifetime(TimeSpan.FromMinutes(5));
+            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options =>
+            {
+                options.LoginPath = "/Auth/Login";
+                options.LogoutPath = "/Auth/Logout";
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
+            });
 
             builder.Services.AddHttpClient();
             builder.Services.AddHttpClient<ICouponService, CouponService>(options =>
@@ -51,7 +59,7 @@ namespace Mango.Web
             builder.Services.AddScoped<IBaseService, BaseService>();
             builder.Services.AddScoped<ICouponService, CouponService>();
             builder.Services.AddScoped<IAuthService, AuthService>();
-
+            builder.Services.AddScoped<ITokenStoreProvider, TokenStoreProvider>();
             builder.Services.AddHttpContextAccessor();
 
             var app = builder.Build();
@@ -66,7 +74,7 @@ namespace Mango.Web
 
             app.UseHttpsRedirection();
             app.UseRouting();
-
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapStaticAssets();

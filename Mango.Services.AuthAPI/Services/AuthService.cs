@@ -87,7 +87,8 @@ namespace Mango.Services.AuthAPI.Services
                 }
                 else
                 {
-                    var token =GenerateToken(user);
+                    var roles = await _userManager.GetRolesAsync(user);
+                    var token = GenerateToken(user, roles);
                     UserDTO _user = new UserDTO()
                     {
                         Email = user.Email,
@@ -134,7 +135,7 @@ namespace Mango.Services.AuthAPI.Services
                 return true;
             }
         }
-        public string GenerateToken(ApplicationUser appuser)
+        public string GenerateToken(ApplicationUser appuser, IEnumerable<string> roles)
         {
             // var secret = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
             var secret = _jwtsettings.Secret;
@@ -145,13 +146,16 @@ namespace Mango.Services.AuthAPI.Services
             var claimList = new List<Claim>()
                 {
                  new Claim(JwtRegisteredClaimNames.Email, appuser.Email),
-                 new Claim(JwtRegisteredClaimNames.Sub, appuser.UserName),
+                 new Claim(JwtRegisteredClaimNames.Sub, appuser.Id),
                  new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                  new Claim("uid", appuser.Id),
-                 new Claim(JwtRegisteredClaimNames.Name, appuser.FullName)
-
+                 new Claim(JwtRegisteredClaimNames.Name, appuser.FullName),
+                 new Claim(JwtRegisteredClaimNames.PhoneNumber, appuser.PhoneNumber),
+              
 
                 };
+
+            claimList.AddRange(roles.Select(r => new Claim(ClaimTypes.Role, r)));
             var tokenDecriptor = new SecurityTokenDescriptor()
             {
                 Subject = new ClaimsIdentity(claimList),
