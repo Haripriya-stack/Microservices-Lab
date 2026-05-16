@@ -3,6 +3,7 @@ using AutoMapper.QueryableExtensions;
 using Mango.Services.CouponApi.Data;
 using Mango.Services.CouponApi.Models;
 using Mango.Services.CouponApi.Models.DTO;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,6 +11,7 @@ namespace Mango.Services.CouponApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class CouponAPIController : ControllerBase
     {
         public AppDBContext _dbcontxt { get; set; }
@@ -22,6 +24,7 @@ namespace Mango.Services.CouponApi.Controllers
             _map = map;
         }
 
+        [Authorize]
         [HttpGet]
         public ResponseDTO GetCouponData()
         {
