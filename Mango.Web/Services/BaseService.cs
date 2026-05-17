@@ -8,11 +8,14 @@ namespace Mango.Web.Services
     {
         public IHttpClientFactory _httpClient { get; set; }
 
-        public BaseService(IHttpClientFactory httpClient)
+        public ITokenStoreProvider _tokenStoreProvider { get; set; }
+
+        public BaseService(IHttpClientFactory httpClient,ITokenStoreProvider tokenStoreProvider)
         {
             _httpClient = httpClient;
+            _tokenStoreProvider=tokenStoreProvider;
         }
-        public async Task<ResponseDTO> SendAPIRequestAsync(RequestDTO request)
+        public async Task<ResponseDTO> SendAPIRequestAsync(RequestDTO request,bool withBearer=true)
         {
             try
             {
@@ -31,6 +34,16 @@ namespace Mango.Web.Services
                 reqmessage.Content = new StringContent(JsonConvert.SerializeObject(request.RequestBody ?? ""), Encoding.UTF8, request.ContentType);
                 reqmessage.RequestUri = new Uri(request.Url ?? "");
                 reqmessage.Headers.Add("Accept", request.ContentType);
+                if(withBearer)
+                {
+                   
+                    string? JWTToken = _tokenStoreProvider.GetToken();
+                    if (!string.IsNullOrEmpty(JWTToken))
+                    {
+                        reqmessage.Headers.Add("Authorization", $"Bearer {JWTToken}");
+                    }
+                };
+      
                 HttpResponseMessage result = await client.SendAsync(reqmessage);
 
                 var apiResponse = new ResponseDTO
@@ -39,8 +52,18 @@ namespace Mango.Web.Services
                     IsSuccess = result.IsSuccessStatusCode,
                     Message = result.ReasonPhrase
                 };
-
-                var serverResponse = await result.Content.ReadFromJsonAsync<ResponseDTO>();
+                if(result.Content.Headers.ContentLength == 0)
+                {
+                    return apiResponse;
+                }
+                else
+                {
+                    var serverResponse = await result.Content.ReadFromJsonAsync<ResponseDTO>();
+                    apiResponse.Message = serverResponse?.Message ?? apiResponse.Message;
+                    apiResponse.IsSuccess = serverResponse?.IsSuccess ?? apiResponse.IsSuccess;
+                    apiResponse.Result = serverResponse?.Result;
+                }
+                
 
 
                 // BaseService.SendAPIRequestAsync - replacement snippet
@@ -50,9 +73,7 @@ namespace Mango.Web.Services
                 // var serverResponse = JsonConvert.DeserializeObject<ResponseDTO>(content);
 
                 // Map serverResponse into the apiResponse we return to callers
-                apiResponse.Message = serverResponse?.Message ?? apiResponse.Message;
-                apiResponse.IsSuccess = serverResponse?.IsSuccess ?? apiResponse.IsSuccess;
-                apiResponse.Result = serverResponse?.Result;
+               
 
                 return apiResponse;
             }

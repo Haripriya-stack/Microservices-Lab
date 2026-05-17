@@ -18,6 +18,7 @@ namespace Mango.Web
 
        AuthAPIBaseUrl = builder.Configuration["BaseURLs:AuthAPI"];
          CouponAPIBaseUrl = builder.Configuration["BaseURLs:CouponAPI"];
+            ProductAPIBaseUrl = builder.Configuration["BaseURLs:ProductAPI"];
             //builder.Services.AddHttpClient("CouponApi", options =>
             //{
             //    options.BaseAddress = new Uri(builder.Configuration["CouponAPIHost:BaseURL"]);
@@ -40,6 +41,15 @@ namespace Mango.Web
             });
 
             builder.Services.AddHttpClient();
+
+            builder.Services.AddHttpClient<IProductService, ProductService>(options =>
+            {
+                options.BaseAddress = new Uri(ProductAPIBaseUrl);
+            }).AddTransientHttpErrorPolicy(opt =>
+                opt.WaitAndRetryAsync(3, retryAttempt =>
+                TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)))
+           ).AddTransientHttpErrorPolicy(opt => opt.CircuitBreakerAsync(3, TimeSpan.FromSeconds(30)));
+
             builder.Services.AddHttpClient<ICouponService, CouponService>(options =>
             {
                 options.BaseAddress = new Uri(CouponAPIBaseUrl);
@@ -58,6 +68,7 @@ namespace Mango.Web
             //since i am injecting base service inside couponservice so that needs to be registered in DI
             builder.Services.AddScoped<IBaseService, BaseService>();
             builder.Services.AddScoped<ICouponService, CouponService>();
+            builder.Services.AddScoped<IProductService, ProductService>();
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<ITokenStoreProvider, TokenStoreProvider>();
             builder.Services.AddHttpContextAccessor();

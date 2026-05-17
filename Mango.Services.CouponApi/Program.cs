@@ -86,12 +86,12 @@ public partial class Program
             };
 
         });
-        //builder.Services.AddAuthorization(options =>
-        //{
-        //    options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
-        //    options.AddPolicy("CustomerOnly", policy => policy.RequireRole("Customer"));
-        //});
-        builder.Services.AddAuthorization();
+        builder.Services.AddAuthorization(options =>
+        {
+            options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
+            options.AddPolicy("CustomerOnly", policy => policy.RequireRole("Customer"));
+        });
+       // builder.Services.AddAuthorization();
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
