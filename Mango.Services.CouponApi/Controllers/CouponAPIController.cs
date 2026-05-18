@@ -3,6 +3,7 @@ using AutoMapper.QueryableExtensions;
 using Mango.Services.CouponApi.Data;
 using Mango.Services.CouponApi.Models;
 using Mango.Services.CouponApi.Models.DTO;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,6 +11,7 @@ namespace Mango.Services.CouponApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+  
     public class CouponAPIController : ControllerBase
     {
         public AppDBContext _dbcontxt { get; set; }
@@ -22,6 +24,7 @@ namespace Mango.Services.CouponApi.Controllers
             _map = map;
         }
 
+        [Authorize(Roles = "Admin,Customer")]
         [HttpGet]
         public ResponseDTO GetCouponData()
         {
@@ -45,6 +48,7 @@ namespace Mango.Services.CouponApi.Controllers
 
         [HttpGet("GetById/{id:int}")]
 
+        [Authorize(Roles = "Admin")]
         public ResponseDTO GetCouponById(int id)
         {
             try
@@ -72,6 +76,7 @@ namespace Mango.Services.CouponApi.Controllers
         }
 
         [HttpGet("GetByCode/{code}")]
+        [Authorize(Roles = "Customer")]
         public ResponseDTO GetCouponByCode(String code)
         {
             try
@@ -99,7 +104,7 @@ namespace Mango.Services.CouponApi.Controllers
         }
 
         [HttpPost("postcoupon")]
-
+        [Authorize(Policy = "AdminOnly")]
         public ResponseDTO CreateCoupon([FromBody] CouponDTO obj)
         {
             try

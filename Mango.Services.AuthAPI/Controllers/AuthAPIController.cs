@@ -44,7 +44,7 @@ namespace Mango.Services.AuthAPI.Controllers
         {
            
                LoginResponseDTO loginResponseDTO=await _authService.LoginUser(loginRequestDTO);
-               if(loginResponseDTO !=null)
+               if(loginResponseDTO.User !=null)
                 {
                     responseDTO.IsSuccess = true;
                     responseDTO.Result = loginResponseDTO;

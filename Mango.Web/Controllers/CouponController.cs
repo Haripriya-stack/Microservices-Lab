@@ -1,6 +1,7 @@
 using Mango.Web.Models;
 using Mango.Web.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.Blazor;
 using Newtonsoft.Json;
 using System.Diagnostics;
 
@@ -13,15 +14,8 @@ namespace Mango.Web.Controllers
         {
             _coupService = coupservice;
         }
-        public IActionResult Index()
-        {
-            return View();
-        }
-
-        public IActionResult Privacy()
-        {
-            return View();
-        }
+       
+   
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
@@ -110,7 +104,7 @@ namespace Mango.Web.Controllers
                 else
                 {
                     TempData["ErrorMessage"] = response.Message ?? "An error occurred while creating the coupon.";
-                    return RedirectToAction(nameof(Error));
+                    return RedirectToAction("Create");
                 }
 
 
@@ -148,7 +142,7 @@ namespace Mango.Web.Controllers
                 else
                 {
                     TempData["ErrorMessage"] = response.Message ?? "An error occurred while creating the coupon.";
-                    return RedirectToAction(nameof(Error));
+                    return RedirectToAction("CustomCreate");
                 }
 
 

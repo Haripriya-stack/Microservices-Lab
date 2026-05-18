@@ -1,23 +1,39 @@
-﻿@model CouponDTO
+﻿
+using Mango.Web.Models;
+@model object
 @{
     ViewData["Title"] = "Success";
 }
 
 <h1 class="text-success">Success.</h1>
-<h2 class="text-success">The coupon has been successfully created.</h2>
-@if (Model is not null)
+<h2 class="text-success">The  Model.GetType() has been successfully created.</h2>
+@if (Model is not null && Model.GetType().GetProperty("CouponId") != null)
 {
     <p>
-        <strong>Coupon ID:</strong> <code>@Model.CouponId</code>
+        <strong>Coupon ID:</strong> <code>@Model.GetType().GetProperty("CouponId")?.GetValue(Model)</code>
     </p>
 }
-
-<h3>SuccessFully Created </h3>
-@if(TempData["ImplementationType"]?.ToString() == "Default")
+else if (Model is not null && Model.GetType().GetProperty("ProductId") != null)
 {
-    <a asp-action="Details">Go back </a>
+    <p>
+        <strong>Product ID:</strong> <code>@Model.GetType().GetProperty("ProductId")?.GetValue(Model)</code>
+    </p>
 }
 else
 {
+    <p>No specific ID available.</p>
+}
+
+<h3>SuccessFully Created </h3>
+@if (Model.GetType() == typeof(CouponDTO)  && TempData["ImplementationType"]?.ToString() == "Default")
+{
+    <a asp-action="Details">Go back </a>
+}
+else if (Model.GetType() == typeof(CouponDTO) && TempData["ImplementationType"]?.ToString() == "Custom")
+{
     <a asp-action="CustomDetails">Go back </a>
+}
+else
+{
+    <a asp-action="ProductDetails">Go back </a>
 }
