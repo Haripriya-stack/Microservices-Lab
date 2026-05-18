@@ -50,7 +50,7 @@ namespace Mango.Services.ProductAPI.Controllers
 
         [HttpGet("GetById/{id:int}")]
 
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         public ResponseDTO GetProductById(int id)
         {
             try

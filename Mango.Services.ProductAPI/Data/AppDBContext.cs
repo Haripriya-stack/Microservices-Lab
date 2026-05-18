@@ -19,7 +19,7 @@ namespace Mango.Services.ProductAPI.Data
 
         public void AppliedChanges()
         {
-            var entries = ChangeTracker.Entries().Where(e => e.Entity is Product && (e.State == EntityState.Modified));
+            var entries = ChangeTracker.Entries().Where(e => e.Entity is Product && ((e.State == EntityState.Modified) || (e.State == EntityState.Added)));
             foreach (var entry in entries)
             {
                 if (entry.Entity is Product product)

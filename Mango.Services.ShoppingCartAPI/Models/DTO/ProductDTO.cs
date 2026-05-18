@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Mango.Web.Models
+namespace Mango.Services.ShoppingCartAPI.Models.DTO
 {
     public class ProductDTO
     {
@@ -14,7 +14,5 @@ namespace Mango.Web.Models
         public string? Description { get; set; }
         public string? ImageUrl { get; set; }
         public string? CategoryName { get; set; }
-
-        public int NoOfItems { get; set; } = 1;
     }
 }

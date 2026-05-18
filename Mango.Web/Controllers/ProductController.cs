@@ -14,10 +14,7 @@ namespace Mango.Web.Controllers
         {
             _productService = productService;
         }
-        public IActionResult Index()
-        {
-            return View();
-        }
+
 
         public async Task<IActionResult> ProductDetails()
         {
@@ -39,6 +36,7 @@ namespace Mango.Web.Controllers
                 return RedirectToAction(nameof(Error));
             }
         }
+
 
         public async Task<IActionResult> ProductCreate()
         {

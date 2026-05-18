@@ -91,7 +91,7 @@ namespace Mango.Web
             app.MapStaticAssets();
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Coupon}/{action=Index}/{id?}")
+                pattern: "{controller=Home}/{action=Index}/{id?}")
                 .WithStaticAssets();
 
             app.Run();

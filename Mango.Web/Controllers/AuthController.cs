@@ -25,7 +25,7 @@ namespace Mango.Web.Controllers
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             _tokenStoreProvider.ClearToken();
-            return RedirectToAction("Index", "Coupon");
+            return RedirectToAction("Index", "Home");
         }
         public async Task<IActionResult> Login()
         {
